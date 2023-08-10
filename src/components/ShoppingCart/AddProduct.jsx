@@ -1,15 +1,44 @@
 import React, { useState } from "react";
 import Card from "../UI/Card";
 import Button from "../UI/Button";
+import ErrorModal from "../UI/ErrorModal";
 
 const AddProduct = (props) => {
   const [productName, setProductName] = useState("");
   const [amount, setAmount] = useState("");
   const [amountType, setAmountType] = useState("adet");
+  const [error, setError] = useState();
+  
+  const amountChangeHandler = (e) => {
+    const amountValue = e.target.value;
+    if (amountValue < 0) {
+      return
+    }
+    console.log(amountValue)
+    setAmount(e.target.value);
+  };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    if (productName.trim().length === 0) {
+    if (productName.trim().length === 0 && amount.trim().length === 0) {
+      setError({
+        title: "Ürün Adı ve miktarı Zorunludur!",
+        message: "Lütfen bir ürün adı ve miktarını giriniz.",
+      });
+      return;
+    }
+    else if (productName.trim().length === 0) {
+      setError({
+        title: "Ürün Adı Zorunludur!",
+        message: "Lütfen bir ürün adı giriniz.",
+      });
+      return;
+    }
+    else if (amount.trim().length === 0) {
+      setError({
+        title: "Miktar Zorunludur!",
+        message: "Lütfen miktarı giriniz.",
+      });
       return;
     }
     const newProductData = {
@@ -25,10 +54,14 @@ const AddProduct = (props) => {
     setAmount("");
     setAmountType("");
   };
-
+  const errorHandler = () => {
+    setError(null);
+  };
 
   return (
-    <Card addClass = "mt-[50px]">
+    <div>
+      {error && <ErrorModal onConfirm={errorHandler} error={error} />}
+      <Card addClass = "mt-[50px] p-5">
       <form className="flex flex-col gap-y-2 max-w-[30rem] mx-auto" onSubmit={submitHandler} >
         <label htmlFor="name" className="font-medium">
           Ürün İsmi
@@ -52,7 +85,7 @@ const AddProduct = (props) => {
             name=""
             id="amount"
             placeholder="Miktarı Giriniz..."
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={amountChangeHandler}
             value={amount}
           />
           <select onChange={(e) => setAmountType(e.target.value)}
@@ -71,6 +104,7 @@ const AddProduct = (props) => {
         </div>
       </form>
     </Card>
+    </div>
   );
 };
 
