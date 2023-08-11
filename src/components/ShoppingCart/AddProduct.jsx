@@ -1,24 +1,32 @@
-import React, { useState } from "react";
+import React, { Fragment, useState,useRef, useEffect } from "react";
 import Card from "../UI/Card";
 import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
+import Wrapper from "../Helpers/Wrapper";
+
 
 const AddProduct = (props) => {
   const [productName, setProductName] = useState("");
   const [amount, setAmount] = useState("");
   const [amountType, setAmountType] = useState("adet");
   const [error, setError] = useState();
+  const nameInputRef = useRef();
   
+  useEffect(()=>{
+    console.log("Çalıştı");
+  },[])
+
+
   const amountChangeHandler = (e) => {
     const amountValue = e.target.value;
     if (amountValue < 0) {
       return
     }
-    console.log(amountValue)
     setAmount(e.target.value);
   };
 
   const submitHandler = (event) => {
+    console.log(nameInputRef.current.className)
     event.preventDefault();
     if (productName.trim().length === 0 && amount.trim().length === 0) {
       setError({
@@ -59,10 +67,10 @@ const AddProduct = (props) => {
   };
 
   return (
-    <div>
+    <Fragment>
       {error && <ErrorModal onConfirm={errorHandler} error={error} />}
       <Card addClass = "mt-[50px] p-5">
-      <form className="flex flex-col gap-y-2 max-w-[30rem] mx-auto" onSubmit={submitHandler} >
+      <form className="flex flex-col gap-y-2 max-w-[30rem] mx-auto" onSubmit={submitHandler} ref={nameInputRef} >
         <label htmlFor="name" className="font-medium">
           Ürün İsmi
         </label>
@@ -74,6 +82,7 @@ const AddProduct = (props) => {
           placeholder="Lütfen ürün adını giriniz"
           onChange={(e) => setProductName(e.target.value)}
           value={productName}
+    
         />
         <label htmlFor="amount" className="font-medium">
           Miktar
@@ -104,7 +113,54 @@ const AddProduct = (props) => {
         </div>
       </form>
     </Card>
-    </div>
+    </Fragment>
+    // <Wrapper>
+    //   {error && <ErrorModal onConfirm={errorHandler} error={error} />}
+    //   <Card addClass = "mt-[50px] p-5">
+    //   <form className="flex flex-col gap-y-2 max-w-[30rem] mx-auto" onSubmit={submitHandler} >
+    //     <label htmlFor="name" className="font-medium">
+    //       Ürün İsmi
+    //     </label>
+    //     <input
+    //       className="border border-red-950"
+    //       type="text"
+    //       name=""
+    //       id="name"
+    //       placeholder="Lütfen ürün adını giriniz"
+    //       onChange={(e) => setProductName(e.target.value)}
+    //       value={productName}
+    //     />
+    //     <label htmlFor="amount" className="font-medium">
+    //       Miktar
+    //     </label>
+    //     <div className="flex justify-between">
+    //       <input
+    //         className="w-[18rem] border border-red-950"
+    //         type="number"
+    //         name=""
+    //         id="amount"
+    //         placeholder="Miktarı Giriniz..."
+    //         onChange={amountChangeHandler}
+    //         value={amount}
+    //       />
+    //       <select onChange={(e) => setAmountType(e.target.value)}
+    //         name="country"
+    //         className="w-[8rem] text-center border border-red-950"
+    //       >
+    //         <option value="Adet">Adet</option>
+    //         <option value="kilo">Kilo</option>
+    //         <option value="litre">Litre</option>
+    //       </select>
+    //     </div>
+    //     <div className="flex justify-end">
+    //       <Button className = "mt-2 w-[8rem]" type="submit">
+    //         EKLE
+    //       </Button>
+    //     </div>
+    //   </form>
+    // </Card>
+    // </Wrapper>
+
   );
 };
 
